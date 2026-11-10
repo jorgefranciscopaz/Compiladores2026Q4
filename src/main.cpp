@@ -1,31 +1,42 @@
 #include <fstream>
 #include <iostream>
 #include "Lexer.hpp"
+#include "Parser.hpp"
 
-int main(int argc, const char *argv[]) {
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <file path>\n";
-        return 1;
-    }
-
-    std::ifstream in(argv[1]);
+// Parses one file. Returns true if it is syntactically valid.
+static bool parseFile(const char *path)
+{
+    std::ifstream in(path);
 
     if (!in.is_open()) {
-        std::cout << "Cannot open file '" << argv[1] << '\n';
-        return 2;
+        std::cerr << path << ": cannot open file\n";
+        return false;
     }
 
     Lexer lexer(in);
+    Parser parser(lexer);
 
-    Token tok = lexer.nextToken();
-    while (tok.tokenId != TokenId::ENDOFFILE) {
-        std::cout << Lexer::tokenToString(tok.tokenId) << " '" << tok.text << "'\n";
-        tok = lexer.nextToken();
+    try {
+        parser.parse();
+    } catch (const ParseError& e) {
+        std::cerr << path << ':' << e.line << ':' << e.column << ": error: " << e.what() << '\n';
+        return false;
     }
 
-    std::cout << Lexer::tokenToString(tok.tokenId) << " '" << tok.text << "'\n";
+    std::cout << path << ": OK\n";
+    return true;
+}
 
-    in.close();
-    
-    return 0;
+int main(int argc, const char *argv[]) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <file path>...\n";
+        return 1;
+    }
+
+    bool allOk = true;
+    for (int i = 1; i < argc; ++i) {
+        allOk = parseFile(argv[i]) && allOk;
+    }
+
+    return allOk ? 0 : 2;
 }
