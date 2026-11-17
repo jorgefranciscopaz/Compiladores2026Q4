@@ -1,0 +1,13 @@
+1:1 Ident 'Func'
+1:6 Ident 'INT'
+1:10 Ident 'If'
+1:13 Ident 'TRUE'
+1:18 Ident 'int1'
+1:23 Ident '_if'
+1:27 Ident 'if_'
+1:31 Ident 'iff'
+1:35 Ident 'elsee'
+1:41 Ident 'returns'
+1:49 Ident 'fun'
+1:53 Ident 'printx'
+2:1 EndOfFile

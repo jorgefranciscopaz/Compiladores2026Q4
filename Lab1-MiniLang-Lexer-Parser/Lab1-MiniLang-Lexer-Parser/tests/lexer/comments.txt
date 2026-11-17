@@ -1,0 +1,7 @@
+// whole line comment
+x = 1; // trailing comment
+// symbols: @ # $ % ^ & * ( ) { } "quoted" /* not special */
+y = 2;//no space
+/ / not a comment
+a / b
+// last line, no newline

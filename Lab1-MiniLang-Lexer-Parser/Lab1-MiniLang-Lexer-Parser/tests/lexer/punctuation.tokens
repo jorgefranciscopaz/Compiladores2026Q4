@@ -1,0 +1,13 @@
+1:1 LParen '('
+1:3 RParen ')'
+1:5 LBrace '{'
+1:7 RBrace '}'
+1:9 Comma ','
+1:11 Semicolon ';'
+2:1 LParen '('
+2:2 RParen ')'
+2:3 LBrace '{'
+2:4 RBrace '}'
+2:5 Comma ','
+2:6 Semicolon ';'
+3:1 EndOfFile

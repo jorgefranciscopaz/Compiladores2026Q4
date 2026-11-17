@@ -1,0 +1,6 @@
+int iffy = 1;
+int printx = 2;
+int trueValue = 3;
+int Int = 4;
+int returns = 5;
+int _while = 6;

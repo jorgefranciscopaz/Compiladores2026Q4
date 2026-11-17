@@ -6,13 +6,10 @@
 
 #include "LL1.hpp"
 
-#include <algorithm>
 #include <initializer_list>
-#include <iostream>
 #include <set>
 #include <stdexcept>
 #include <string>
-#include <tuple>
 #include <vector>
 
 namespace {
@@ -94,17 +91,6 @@ std::string ntName(NonTerminals n)
     return "?";
 }
 
-std::string symName(const Symbol& s) { return s.isTerminal ? tokenName(s.tok) : ntName(s.nt); }
-
-std::string ruleText(int n)
-{
-    const Rule& r = RULES[n - 1];
-    std::string s = std::to_string(n) + ": " + ntName(r.lhs) + " →";
-    if (r.rhs.empty()) return s + " ε";
-    for (const Symbol& x : r.rhs) s += " " + symName(x);
-    return s;
-}
-
 // Descripción del token recibido, con el mismo estilo que Parser::describe.
 std::string describe(const Token& tok)
 {
@@ -165,50 +151,12 @@ const Table& table()
     return t;
 }
 
-// Rellena con espacios contando caracteres (no bytes), por ε y →.
-std::string pad(const std::string& s, std::size_t width)
-{
-    std::size_t visible = 0;
-    for (unsigned char c : s) {
-        if ((c & 0xC0) != 0x80) ++visible;
-    }
-    return s + std::string(width > visible ? width - visible : 0, ' ');
-}
-
 } // namespace
 
 // ----------------------------------------------------------------------------
 // LL1Parser
 // ----------------------------------------------------------------------------
-LL1Parser::LL1Parser(Lexer& lex, bool tr) : lexer(lex), trace(tr) {}
-
-void LL1Parser::printTable()
-{
-    const TokenId cols[] = {TokenId::Ident, TokenId::Number, TokenId::OpEqual,
-                            TokenId::OpAdd, TokenId::OpMul, TokenId::OpenParen,
-                            TokenId::CloseParen, TokenId::Semicolon, TokenId::EndOfFile};
-    const NonTerminals rows[] = {NonTerminals::PROGRAM, NonTerminals::PROGRAM_P, NonTerminals::ASSIGN,
-                                 NonTerminals::EXPR, NonTerminals::EXPR_P, NonTerminals::TERM,
-                                 NonTerminals::TERM_P, NonTerminals::FACTOR};
-    const Table& M = table();
-
-    std::cout << "M[A,a]    ";
-    for (TokenId c : cols) {
-        std::string n = tokenName(c);
-        std::cout << std::string(8 - n.size(), ' ') << n;
-    }
-    std::cout << "\n";
-    for (NonTerminals r : rows) {
-        std::string n = ntName(r);
-        std::cout << n << std::string(10 - n.size(), ' ');
-        for (TokenId c : cols) {
-            auto it = M.find({r, c});
-            std::string cell = (it == M.end()) ? "" : std::to_string(it->second);
-            std::cout << std::string(8 - cell.size(), ' ') << cell;
-        }
-        std::cout << "\n";
-    }
-}
+LL1Parser::LL1Parser(Lexer& lex) : lexer(lex) {}
 
 void LL1Parser::parse()
 {
@@ -216,42 +164,16 @@ void LL1Parser::parse()
 
     // La cima de la pila es el ÚLTIMO elemento.
     std::vector<Symbol> stack = {T(TokenId::EndOfFile), N(NonTerminals::PROGRAM)};
-    Token tok = lexer.nextToken();   // lookahead, se pide al Lexer bajo demanda
-
-    std::vector<std::tuple<std::string, std::string, std::string>> rows;
-    auto flush = [&]() {
-        if (!trace || rows.empty()) return;
-        const std::string head = "Pila (cima a la izq.)";
-        std::size_t w = head.size();
-        for (const auto& r : rows) w = std::max(w, std::get<0>(r).size());
-        std::cout << pad(head, w) << "  " << pad("Entrada", 7) << "  Acción\n";
-        for (const auto& r : rows) {
-            std::cout << pad(std::get<0>(r), w) << "  " << pad(std::get<1>(r), 7) << "  "
-                      << std::get<2>(r) << "\n";
-        }
-        rows.clear();
-    };
-    auto fail = [&](const std::string& msg) {
-        flush();
-        return ParseError(msg, tok.line, tok.column);
-    };
+    Token tok = lexer.nextToken();   // lookahead
 
     while (!stack.empty()) {
         const Symbol X = stack.back();
 
-        std::string pila;                         // cima a la izquierda, como en la PPT
-        if (trace) {
-            for (auto it = stack.rbegin(); it != stack.rend(); ++it) {
-                if (!pila.empty()) pila += " ";
-                pila += symName(*it);
-            }
-        }
-
         if (X.isTerminal) {
             if (X.tok != tok.tokenId) {
-                throw fail("Expected '" + tokenName(X.tok) + "' but found " + describe(tok));
+                throw ParseError("Expected '" + tokenName(X.tok) + "' but found " + describe(tok),
+                                 tok.line, tok.column);
             }
-            if (trace) rows.emplace_back(pila, tokenName(tok.tokenId), "match " + tokenName(X.tok));
             stack.pop_back();
             if (X.tok != TokenId::EndOfFile) {    // match: se consume el token
                 tok = lexer.nextToken();
@@ -265,17 +187,15 @@ void LL1Parser::parse()
                 }
                 std::string lista;
                 for (const std::string& e : esperados) lista += (lista.empty() ? "" : ", ") + e;
-                throw fail("Unexpected " + describe(tok) + " while expanding " + ntName(X.nt) +
-                           "; expected one of: " + lista);
+                throw ParseError("Unexpected " + describe(tok) + " while expanding " + ntName(X.nt) +
+                                 "; expected one of: " + lista, tok.line, tok.column);
             }
-            const int n = cell->second;           // número de regla
-            if (trace) rows.emplace_back(pila, tokenName(tok.tokenId), ruleText(n));
             stack.pop_back();
-            const std::vector<Symbol>& rhs = RULES[n - 1].rhs;
+            const std::vector<Symbol>& rhs = RULES[cell->second - 1].rhs;
             for (auto r = rhs.rbegin(); r != rhs.rend(); ++r) {
                 stack.push_back(*r);              // apilar el lado derecho AL REVÉS
             }
         }
     }
-    flush();                                      // pila vacía y $ consumido: aceptado
+    // pila vacía y $ consumido: aceptado
 }

@@ -1,0 +1,103 @@
+digraph INITIAL {
+		rankdir=LR;
+		concentrate=true;
+		node [fontname="ArialNarrow"];
+		edge [fontname="Courier"];
+
+		init [root=true,peripheries=0,label="INITIAL",fontname="Courier"];
+		init -> S0;
+
+/*START*/	S0 [label="S0"];
+		S0 -> S3 [label="\\t-\\n"];
+		S0 -> S3 [label="\\r"];
+		S0 -> S3 [label="\\x20"];
+		S0 -> S11 [label="!"];
+		S0 -> S12 [label="&"];
+		S0 -> S14 [label="("];
+		S0 -> S15 [label=")"];
+		S0 -> S7 [label="*"];
+		S0 -> S5 [label="+"];
+		S0 -> S18 [label=","];
+		S0 -> S6 [label="-"];
+		S0 -> S4 [label="/"];
+		S0 -> S2 [label="0-9"];
+		S0 -> S19 [label=";"];
+		S0 -> S8 [label="<"];
+		S0 -> S10 [label="="];
+		S0 -> S9 [label=">"];
+		S0 -> S1 [label="A-Z"];
+		S0 -> S1 [label="_"];
+		S0 -> S1 [label="a-z"];
+		S0 -> S16 [label="{"];
+		S0 -> S13 [label="|"];
+		S0 -> S17 [label="}"];
+
+/*ACCEPT 1*/	S1 [label="S1\n[1]",peripheries=2];
+		S1 -> S1 [label="0-9"];
+		S1 -> S1 [label="A-Z"];
+		S1 -> S1 [label="_"];
+		S1 -> S1 [label="a-z"];
+
+/*ACCEPT 2*/	S2 [label="S2\n[2]",peripheries=2];
+		S2 -> S2 [label="0-9"];
+
+/*ACCEPT 3*/	S3 [label="S3\n[3]",peripheries=2];
+		S3 -> S3 [label="\\t-\\n"];
+		S3 -> S3 [label="\\r"];
+		S3 -> S3 [label="\\x20"];
+
+/*ACCEPT 8*/	S4 [label="S4\n[8]",peripheries=2];
+		S4 -> S20 [label="/"];
+
+/*ACCEPT 5*/	S5 [label="S5\n[5]",peripheries=2];
+
+/*ACCEPT 6*/	S6 [label="S6\n[6]",peripheries=2];
+
+/*ACCEPT 7*/	S7 [label="S7\n[7]",peripheries=2];
+
+/*ACCEPT 9*/	S8 [label="S8\n[9]",peripheries=2];
+		S8 -> S21 [label="="];
+
+/*ACCEPT 11*/	S9 [label="S9\n[11]",peripheries=2];
+		S9 -> S22 [label="="];
+
+/*ACCEPT 18*/	S10 [label="S10\n[18]",peripheries=2];
+		S10 -> S23 [label="="];
+
+/*ACCEPT 17*/	S11 [label="S11\n[17]",peripheries=2];
+		S11 -> S24 [label="="];
+
+/*STATE*/	S12 [label="S12"];
+		S12 -> S25 [label="&"];
+
+/*STATE*/	S13 [label="S13"];
+		S13 -> S26 [label="|"];
+
+/*ACCEPT 19*/	S14 [label="S14\n[19]",peripheries=2];
+
+/*ACCEPT 20*/	S15 [label="S15\n[20]",peripheries=2];
+
+/*ACCEPT 21*/	S16 [label="S16\n[21]",peripheries=2];
+
+/*ACCEPT 22*/	S17 [label="S17\n[22]",peripheries=2];
+
+/*ACCEPT 23*/	S18 [label="S18\n[23]",peripheries=2];
+
+/*ACCEPT 24*/	S19 [label="S19\n[24]",peripheries=2];
+
+/*ACCEPT 4*/	S20 [label="S20\n[4]",peripheries=2];
+		S20 -> S20 [label="\\0-\\t"];
+		S20 -> S20 [label="\\v-\\xff"];
+
+/*ACCEPT 10*/	S21 [label="S21\n[10]",peripheries=2];
+
+/*ACCEPT 12*/	S22 [label="S22\n[12]",peripheries=2];
+
+/*ACCEPT 13*/	S23 [label="S23\n[13]",peripheries=2];
+
+/*ACCEPT 14*/	S24 [label="S24\n[14]",peripheries=2];
+
+/*ACCEPT 15*/	S25 [label="S25\n[15]",peripheries=2];
+
+/*ACCEPT 16*/	S26 [label="S26\n[16]",peripheries=2];
+}

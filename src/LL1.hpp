@@ -52,15 +52,11 @@ struct KeyHasher {
 // y reporta errores con ParseError, igual que el parser recursivo.
 class LL1Parser {
 public:
-    explicit LL1Parser(Lexer& lexer, bool trace = false);
+    explicit LL1Parser(Lexer& lexer);
 
     // Analiza toda la entrada. Lanza ParseError si es inválida.
     void parse();
 
-    // Imprime la tabla M[A, a] en stdout.
-    static void printTable();
-
 private:
     Lexer& lexer;
-    bool trace;
 };

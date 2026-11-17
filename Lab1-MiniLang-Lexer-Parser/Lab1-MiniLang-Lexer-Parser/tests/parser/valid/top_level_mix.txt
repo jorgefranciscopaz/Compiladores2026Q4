@@ -1,0 +1,6 @@
+int x = 1;
+func int twice(int n) { return n * 2; }
+print twice(x);
+func void hello() { print 1; }
+hello();
+{ int y = 2; }

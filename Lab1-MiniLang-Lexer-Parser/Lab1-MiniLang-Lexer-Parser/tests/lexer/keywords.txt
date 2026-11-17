@@ -1,0 +1,2 @@
+func int bool void if else
+while for return print read true false

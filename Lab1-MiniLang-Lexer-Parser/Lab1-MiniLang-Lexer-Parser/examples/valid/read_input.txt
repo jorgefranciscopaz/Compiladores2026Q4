@@ -1,0 +1,5 @@
+int a;
+int b;
+read a;
+read b;
+print a * b;

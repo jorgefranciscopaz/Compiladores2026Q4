@@ -1,0 +1,5 @@
+print 1;
+print x + 1;
+print true;
+print f(2);
+read x;

@@ -1,0 +1,103 @@
+digraph INITIAL {
+		rankdir=LR;
+		concentrate=true;
+		node [fontname="ArialNarrow"];
+		edge [fontname="Courier"];
+
+		init [root=true,peripheries=0,label="INITIAL",fontname="Courier"];
+		init -> N0x7f792de94018;
+
+/*START*/	N0x7f792de94018 [label=""];
+		N0x7f792de94018 -> N0x7f792de942a0 [label="\\t-\\n"];
+		N0x7f792de94018 -> N0x7f792de942a0 [label="\\r"];
+		N0x7f792de94018 -> N0x7f792de942a0 [label="\\x20"];
+		N0x7f792de94018 -> N0x7f792de94960 [label="!"];
+		N0x7f792de94018 -> N0x7f792de94a38 [label="&"];
+		N0x7f792de94018 -> N0x7f792de94be8 [label="("];
+		N0x7f792de94018 -> N0x7f792de94cc0 [label=")"];
+		N0x7f792de94018 -> N0x7f792de94600 [label="*"];
+		N0x7f792de94018 -> N0x7f792de94450 [label="+"];
+		N0x7f792de94018 -> N0x7f792de94f48 [label=","];
+		N0x7f792de94018 -> N0x7f792de94528 [label="-"];
+		N0x7f792de94018 -> N0x7f792de94378 [label="/"];
+		N0x7f792de94018 -> N0x7f792de941c8 [label="0-9"];
+		N0x7f792de94018 -> N0x7f792de95020 [label=";"];
+		N0x7f792de94018 -> N0x7f792de946d8 [label="<"];
+		N0x7f792de94018 -> N0x7f792de94888 [label="="];
+		N0x7f792de94018 -> N0x7f792de947b0 [label=">"];
+		N0x7f792de94018 -> N0x7f792de940f0 [label="A-Z"];
+		N0x7f792de94018 -> N0x7f792de940f0 [label="_"];
+		N0x7f792de94018 -> N0x7f792de940f0 [label="a-z"];
+		N0x7f792de94018 -> N0x7f792de94d98 [label="{"];
+		N0x7f792de94018 -> N0x7f792de94b10 [label="|"];
+		N0x7f792de94018 -> N0x7f792de94e70 [label="}"];
+
+/*ACCEPT 1*/	N0x7f792de940f0 [label="[1]",peripheries=2];
+		N0x7f792de940f0 -> N0x7f792de940f0 [label="0-9"];
+		N0x7f792de940f0 -> N0x7f792de940f0 [label="A-Z"];
+		N0x7f792de940f0 -> N0x7f792de940f0 [label="_"];
+		N0x7f792de940f0 -> N0x7f792de940f0 [label="a-z"];
+
+/*ACCEPT 2*/	N0x7f792de941c8 [label="[2]",peripheries=2];
+		N0x7f792de941c8 -> N0x7f792de941c8 [label="0-9"];
+
+/*ACCEPT 3*/	N0x7f792de942a0 [label="[3]",peripheries=2];
+		N0x7f792de942a0 -> N0x7f792de942a0 [label="\\t-\\n"];
+		N0x7f792de942a0 -> N0x7f792de942a0 [label="\\r"];
+		N0x7f792de942a0 -> N0x7f792de942a0 [label="\\x20"];
+
+/*ACCEPT 8*/	N0x7f792de94378 [label="[8]",peripheries=2];
+		N0x7f792de94378 -> N0x7f792de950f8 [label="/"];
+
+/*ACCEPT 5*/	N0x7f792de94450 [label="[5]",peripheries=2];
+
+/*ACCEPT 6*/	N0x7f792de94528 [label="[6]",peripheries=2];
+
+/*ACCEPT 7*/	N0x7f792de94600 [label="[7]",peripheries=2];
+
+/*ACCEPT 9*/	N0x7f792de946d8 [label="[9]",peripheries=2];
+		N0x7f792de946d8 -> N0x7f792de951d0 [label="="];
+
+/*ACCEPT 11*/	N0x7f792de947b0 [label="[11]",peripheries=2];
+		N0x7f792de947b0 -> N0x7f792de952a8 [label="="];
+
+/*ACCEPT 18*/	N0x7f792de94888 [label="[18]",peripheries=2];
+		N0x7f792de94888 -> N0x7f792de95380 [label="="];
+
+/*ACCEPT 17*/	N0x7f792de94960 [label="[17]",peripheries=2];
+		N0x7f792de94960 -> N0x7f792de95458 [label="="];
+
+/*STATE*/	N0x7f792de94a38 [label=""];
+		N0x7f792de94a38 -> N0x7f792de95530 [label="&"];
+
+/*STATE*/	N0x7f792de94b10 [label=""];
+		N0x7f792de94b10 -> N0x7f792de95608 [label="|"];
+
+/*ACCEPT 19*/	N0x7f792de94be8 [label="[19]",peripheries=2];
+
+/*ACCEPT 20*/	N0x7f792de94cc0 [label="[20]",peripheries=2];
+
+/*ACCEPT 21*/	N0x7f792de94d98 [label="[21]",peripheries=2];
+
+/*ACCEPT 22*/	N0x7f792de94e70 [label="[22]",peripheries=2];
+
+/*ACCEPT 23*/	N0x7f792de94f48 [label="[23]",peripheries=2];
+
+/*ACCEPT 24*/	N0x7f792de95020 [label="[24]",peripheries=2];
+
+/*ACCEPT 4*/	N0x7f792de950f8 [label="[4]",peripheries=2];
+		N0x7f792de950f8 -> N0x7f792de950f8 [label="\\0-\\t"];
+		N0x7f792de950f8 -> N0x7f792de950f8 [label="\\v-\\xff"];
+
+/*ACCEPT 10*/	N0x7f792de951d0 [label="[10]",peripheries=2];
+
+/*ACCEPT 12*/	N0x7f792de952a8 [label="[12]",peripheries=2];
+
+/*ACCEPT 13*/	N0x7f792de95380 [label="[13]",peripheries=2];
+
+/*ACCEPT 14*/	N0x7f792de95458 [label="[14]",peripheries=2];
+
+/*ACCEPT 15*/	N0x7f792de95530 [label="[15]",peripheries=2];
+
+/*ACCEPT 16*/	N0x7f792de95608 [label="[16]",peripheries=2];
+}

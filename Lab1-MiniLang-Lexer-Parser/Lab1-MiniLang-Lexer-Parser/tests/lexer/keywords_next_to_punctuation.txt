@@ -1,0 +1,4 @@
+if(a){}else{}
+return;
+true&&false
+while(x<3)print(x);

@@ -1,0 +1,9 @@
+1:1 Number '123'
+1:4 Ident 'abc'
+1:8 Number '4'
+1:9 Ident 'x'
+1:11 Number '0'
+1:12 Ident '_1'
+1:15 Number '9'
+1:16 Ident '__'
+2:1 EndOfFile

@@ -1,0 +1,4 @@
+func void a() { }
+func int b(int x) { return x; }
+func bool c(int x, bool y, int z) { return y; }
+func void d(bool flag) { print flag; }

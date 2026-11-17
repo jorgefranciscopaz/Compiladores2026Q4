@@ -1,0 +1,3 @@
+func void f() { return; }
+func int g() { return 1; }
+func bool h(int x) { return x > 0 && x < 10; }

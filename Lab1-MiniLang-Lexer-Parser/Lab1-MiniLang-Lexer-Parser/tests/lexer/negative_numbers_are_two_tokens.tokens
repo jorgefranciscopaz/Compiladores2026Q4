@@ -1,0 +1,12 @@
+1:1 OpSub '-'
+1:2 Number '5'
+1:4 OpSub '-'
+1:6 OpSub '-'
+1:7 Number '5'
+1:9 OpSub '-'
+1:10 OpSub '-'
+1:11 Number '5'
+1:13 Number '5'
+1:14 OpSub '-'
+1:15 Number '3'
+2:1 EndOfFile

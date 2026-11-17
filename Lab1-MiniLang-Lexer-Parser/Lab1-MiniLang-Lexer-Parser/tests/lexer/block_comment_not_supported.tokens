@@ -1,0 +1,13 @@
+1:1 OpDiv '/'
+1:2 OpMul '*'
+1:4 Ident 'c'
+1:6 OpMul '*'
+1:7 OpDiv '/'
+2:1 Ident 'a'
+2:3 OpDiv '/'
+2:4 OpMul '*'
+2:6 Ident 'b'
+2:8 OpMul '*'
+2:9 OpDiv '/'
+2:11 Ident 'c'
+3:1 EndOfFile

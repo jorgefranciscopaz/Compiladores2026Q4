@@ -1,0 +1,3 @@
+// Syntactically valid: the type checker (a later phase) rejects it, the parser must not.
+b = 1 < 2 < 3;
+b = a == b == c;

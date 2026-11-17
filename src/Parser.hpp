@@ -44,7 +44,6 @@ private:
     ParseError error(const std::string& message) const;
     static std::string describe(const Token& tok);
 
-private:
     Lexer& lexer;
     Token token;
 };

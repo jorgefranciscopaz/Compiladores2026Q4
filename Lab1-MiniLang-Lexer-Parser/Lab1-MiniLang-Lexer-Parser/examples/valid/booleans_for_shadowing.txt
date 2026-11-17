@@ -1,0 +1,15 @@
+int total = 0;
+for (int i = 1; i <= 10; i = i + 1) {
+    bool even = i - (i / 2) * 2 == 0;
+    if (even && i > 2) {
+        total = total + i;
+    }
+}
+print total;          // 4 + 6 + 8 + 10 = 28
+
+int x = 1;
+{
+    int x = 2;        // shadows the outer x
+    print x;          // 2
+}
+print x;              // 1

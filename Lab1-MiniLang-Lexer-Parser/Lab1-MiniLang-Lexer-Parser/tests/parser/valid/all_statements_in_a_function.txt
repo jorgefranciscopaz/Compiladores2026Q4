@@ -1,0 +1,11 @@
+func int demo(int n, bool flag) {
+    int local = n;
+    bool other;
+    local = local + 1;
+    helper(local);
+    if (flag) { print local; } else { print 0; }
+    while (local > 0) { local = local - 1; }
+    for (int i = 0; i < n; i = i + 1) { read local; }
+    { print local; }
+    return local;
+}

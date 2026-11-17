@@ -1,0 +1,6 @@
+int x;
+bool b;
+int y = 1;
+bool c = true;
+int z = y + 2 * 3;
+bool d = !c && (y < z);

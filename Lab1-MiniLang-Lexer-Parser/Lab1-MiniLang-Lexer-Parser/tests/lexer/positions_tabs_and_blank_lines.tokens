@@ -1,0 +1,6 @@
+1:2 Ident 'x'
+1:4 Assign '='
+1:6 Number '1'
+1:7 Semicolon ';'
+3:5 Ident 'y'
+4:1 EndOfFile

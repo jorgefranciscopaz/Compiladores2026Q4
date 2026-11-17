@@ -1,0 +1,6 @@
+// Valid syntax; the errors only appear when the program runs (a much later phase).
+int zero = 0;
+print 10 / zero;                          // runtime error: division by zero
+
+func int loop(int n) { return loop(n + 1); }
+print loop(0);                            // runtime error: call depth exceeded

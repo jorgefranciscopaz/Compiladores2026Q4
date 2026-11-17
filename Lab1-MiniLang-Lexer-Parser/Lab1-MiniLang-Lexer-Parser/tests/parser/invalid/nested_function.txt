@@ -1,0 +1,1 @@
+func void f() { func void g() { } }

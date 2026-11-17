@@ -1,0 +1,10 @@
+// Every statement below is SYNTACTICALLY valid. A later phase (semantic analysis) rejects
+// them; the parser must accept them all, because it only checks the grammar.
+y = 1;                                    // S01 undeclared identifier
+int x; int x;                             // S02 redeclaration in the same scope
+int a = true;                             // S03 initializer of the wrong type
+bool b = 1 < 2 < 3;                       // S06 relational operator applied to a bool
+if (3 + 4) { print 1; }                   // S10 condition is not a bool
+func int f(int n) { return true; }        // S16 wrong return type
+print f(1, 2);                            // S13 wrong number of arguments
+return 1;                                 // S18 'return' outside of a function
