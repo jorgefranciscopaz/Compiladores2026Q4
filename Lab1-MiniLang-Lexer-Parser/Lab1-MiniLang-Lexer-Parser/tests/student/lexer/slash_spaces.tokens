@@ -1,0 +1,3 @@
+1:1 Ident 'x'
+1:2 OpDiv '/'
+2:1 EndOfFile

@@ -1,0 +1,7 @@
+1:1 Ident 'a'
+1:2 OpAnd '&&'
+1:4 Unknown '&'
+1:5 Ident 'b'
+1:6 Unknown '|'
+1:7 Ident 'c'
+2:1 EndOfFile
