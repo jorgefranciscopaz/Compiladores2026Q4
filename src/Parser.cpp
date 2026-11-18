@@ -1,4 +1,5 @@
 #include "Parser.hpp"
+#include <iostream>
 
 Parser::Parser(Lexer &lex) : lexer(lex), token(TokenId::Unknown, "")
 {
@@ -24,55 +25,60 @@ void Parser::program()
 // assign → IDENT "=" expr ";"
 void Parser::assign()
 {
+    Token target = token;
     expect(TokenId::Ident, "Expected identifier but found " + describe(token));
     expect(TokenId::OpEqual, "Expected '=' but found " + describe(token));
-    expr();
+    ExprPtr value = expr();
     expect(TokenId::Semicolon, "Expected ';' but found " + describe(token));
+
+    std::cout << target.text << " =\n";
+    printAST(*value, std::cout, 1);
 }
 
 // expr → term ("+" term)*
-void Parser::expr()
+ExprPtr Parser::expr()
 {
-    term();
-    while (token.tokenId == TokenId::OpAdd)
-    {
+    ExprPtr left = term();
+    while(token.tokenId == TokenId::OpAdd){
+        SourceLoc opLoc = locOf(token);
         nextToken();
-        term();
+        ExprPtr right = term();
+        left = std::make_unique<BinaryExpr>(BinaryOpKind::Add, std::move(left), std::move(right), opLoc);
     }
+    return left;
 }
 
 // term → factor ("*" factor)*
-void Parser::term()
+ExprPtr Parser::term()
 {
-    factor();
-    while (token.tokenId == TokenId::OpMul)
-    {
+    ExprPtr left = factor();
+    while(token.tokenId == TokenId::OpMul){
+        SourceLoc opLoc = locOf(token);
         nextToken();
-        factor();
+        ExprPtr right = factor();
+        left = std::make_unique<BinaryExpr>(BinaryOpKind::Mul, std::move(left), std::move(right), opLoc);
     }
+    return left;
 }
 
 // factor → IDENT | NUMBER | "(" expr ")"
-void Parser::factor()
+ExprPtr Parser::factor()
 {
-    if (token.tokenId == TokenId::Ident)
-    {
-        nextToken();
+    Token tok = token;
+    switch (token.tokenId){
+        case TokenId::Ident:
+            nextToken();
+            return std::make_unique<IdentExpr>(tok.text, locOf(tok));
+        case TokenId::Number:
+            nextToken();
+            return std::make_unique<IntLiteral>(std::stoi(tok.text), locOf(tok));
+        case TokenId::OpenParen:
+            nextToken();
+            ExprPtr inner = expr();
+            expect(TokenId::CloseParen, "Expected ')' but found " + describe(token));
+            return inner;
     }
-    else if (token.tokenId == TokenId::Number)
-    {
-        nextToken();
-    }
-    else if (token.tokenId == TokenId::OpenParen)
-    {
-        nextToken();
-        expr();
-        expect(TokenId::CloseParen, "Expected ')' but found " + describe(token));
-    }
-    else
-    {
-        throw error("Expected identifier, number or '(' but found " + describe(token));
-    }
+    throw error("Expected identifier, number or '(' but found " + describe(token));
 }
 
 void Parser::nextToken()

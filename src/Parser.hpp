@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include "Lexer.hpp"
+#include "NPI.hpp"
 
 // Syntax error with the position of the offending token.
 class ParseError : public std::runtime_error {
@@ -35,9 +36,11 @@ public:
 private:
     void program();
     void assign();
-    void expr();
-    void term();
-    void factor();
+    ExprPtr expr();
+    ExprPtr term();
+    ExprPtr factor();
+
+    SourceLoc locOf(const Token &t) const { return {t.line, t.column}; } //Para pasarle el SourceLoc a los nodos del AST
 
     void nextToken();
     void expect(TokenId expected, const std::string& message);
