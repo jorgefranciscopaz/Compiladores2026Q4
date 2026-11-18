@@ -58,7 +58,7 @@ void Parser::traceLine(const std::string& text) const
 }
 
 // =============================================================================
-// TODO(B3): the non-terminal methods
+// the non-terminal methods
 //
 // One method per non-terminal, written from the grammar in Parser.hpp:
 //   * sequence       -> call / expect() each symbol in order
@@ -78,68 +78,156 @@ void Parser::traceLine(const std::string& text) const
 // program → item* EOF            (EOF is checked by parse(); write only the item* loop)
 void Parser::program()
 {
-    throw NotImplementedError("Parser::program");
+    TraceScope trace(*this, "program");
+    //Mientras sea uno de los iniciales de **ITEM**
+    while(startsItem()){
+        item();
+    }
 }
 
 // item → function | statement
 void Parser::item()
 {
-    throw NotImplementedError("Parser::item");
+    TraceScope trace(*this, "item");
+    if(token.tokenId == TokenId::KeywordFunc){
+        function();
+    }else if(startsStatement()){
+        statement();
+    }else{
+        throw error("Expected a function or a statement but found " + describe(token));
+    }
 }
 
 // function → "func" returnType IDENT "(" [ params ] ")" block
 void Parser::function()
 {
-    throw NotImplementedError("Parser::function");
+    TraceScope trace(*this, "function");
+    expect(TokenId::KeywordFunc, "Expected 'func' but found " + describe(token));
+    returnType();
+    expect(TokenId::Ident, "Expected 'Identifier' but found " + describe(token));
+    expect(TokenId::LParen, "Expected '(' but found " + describe(token));
+    if(token.tokenId == TokenId::KeywordInt || token.tokenId == TokenId::KeywordBool){
+        params();
+    }
+    expect(TokenId::RParen, "Expected ')' but found " + describe(token));
+    block();
 }
 
 // params → param ( "," param )*
 void Parser::params()
 {
-    throw NotImplementedError("Parser::params");
+    TraceScope trace(*this, "params");
+    param();
+    while(token.tokenId == TokenId::Comma){
+        expect(TokenId::Comma, "Expected ',' but found " + describe(token));
+        param();
+    }
 }
 
 // param → type IDENT
 void Parser::param()
 {
-    throw NotImplementedError("Parser::param");
+    TraceScope trace(*this, "param");
+    type();
+    expect(TokenId::Ident, "Expected 'Identifier' but found " + describe(token));
 }
 
 // type → "int" | "bool"
 void Parser::type()
 {
-    throw NotImplementedError("Parser::type");
+    TraceScope trace(*this, "type");
+    if(token.tokenId == TokenId::KeywordInt){
+        nextToken();
+    }else if(token.tokenId == TokenId::KeywordBool){
+        nextToken();
+    }else{
+        throw error("Expected an int or bool but found " + describe(token));
+    }
 }
 
 // returnType → type | "void"
 void Parser::returnType()
 {
-    throw NotImplementedError("Parser::returnType");
+    TraceScope trace(*this, "returnType");
+    if(token.tokenId == TokenId::KeywordInt || token.tokenId == TokenId::KeywordBool){
+        type();
+    }else if(token.tokenId == TokenId::KeywordVoid){
+        nextToken();
+    }else{
+        throw error("Expected int, bool or 'void' but found " + describe(token));
+    }
 }
 
 // block → "{" statement* "}"
 void Parser::block()
 {
-    throw NotImplementedError("Parser::block");
+    TraceScope trace(*this, "block");
+    expect(TokenId::LBrace, "Expected '{' but found " + describe(token));
+    while(startsStatement()){
+        statement();
+    }
+    expect(TokenId::RBrace, "Expected '}' but found " + describe(token));
 }
 
 // statement → varDecl | simpleStmt | ifStmt | whileStmt | forStmt
 //           | returnStmt | printStmt | readStmt | block
 void Parser::statement()
 {
-    throw NotImplementedError("Parser::statement");
+    TraceScope trace(*this, "statement");
+    if(token.tokenId == TokenId::KeywordInt || token.tokenId == TokenId::KeywordBool){
+        varDecl();
+    }else if(token.tokenId == TokenId::Ident){
+        simpleStmt();
+    }else if(token.tokenId == TokenId::KeywordIf){
+        ifStmt();
+    }else if(token.tokenId == TokenId::KeywordWhile){
+        whileStmt();
+    }else if(token.tokenId == TokenId::KeywordFor){
+        forStmt();
+    }else if(token.tokenId == TokenId::KeywordReturn){
+        returnStmt();
+    }else if(token.tokenId == TokenId::KeywordPrint){
+        printStmt();
+    }else if(token.tokenId == TokenId::KeywordRead){
+        readStmt();
+    }else if(token.tokenId == TokenId::LBrace){
+        block();
+    }else{
+        throw error("Expected int, bool, ident, 'if', 'while', 'for', 'return', 'print', 'read' or '{' but found " + describe(token));
+    }
 }
 
 // varDecl → type IDENT [ "=" expr ] ";"
 void Parser::varDecl()
 {
-    throw NotImplementedError("Parser::varDecl");
+    TraceScope trace(*this, "varDecl");
+    type();
+    expect(TokenId::Ident, "Expected 'Identifier' but found " + describe(token));
+    if(token.tokenId == TokenId::Assign){
+        nextToken();
+        expr();
+    }
+    expect(TokenId::Semicolon, "Expected ';' but found " + describe(token));
 }
 
 // simpleStmt → IDENT ( "=" expr | "(" [ args ] ")" ) ";"
 void Parser::simpleStmt()
 {
-    throw NotImplementedError("Parser::simpleStmt");
+    TraceScope trace(*this, "simpleStmt");
+    expect(TokenId::Ident, "Expected 'Identifier' but found " + describe(token));
+    if(token.tokenId == TokenId::Assign){
+        nextToken();
+        expr();
+    }else if(token.tokenId == TokenId::LParen){
+        nextToken();
+        if(startsExpr()){
+            args();
+        }
+        expect(TokenId::RParen, "Expected ')' but found " + describe(token));
+    }else{
+        throw error("Expected '=', or '(' but found " + describe(token));
+    }
+    expect(TokenId::Semicolon, "Expected ';' but found " + describe(token));
 }
 
 // ifStmt → "if" "(" expr ")" block [ "else" ( ifStmt | block ) ]
@@ -252,5 +340,10 @@ void Parser::primary()
 // args → expr ( "," expr )*
 void Parser::args()
 {
-    throw NotImplementedError("Parser::args");
+    TraceScope trace(*this, "args");
+    expr();
+    while(token.tokenId == TokenId::Comma){
+        nextToken();
+        expr();
+    }
 }
