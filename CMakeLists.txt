@@ -12,7 +12,10 @@ src/Lexer.hpp
 src/Parser.hpp
 src/Parser.cpp
 src/LL1.hpp
-src/LL1.cpp)
+src/LL1.cpp
+src/NPI.hpp
+src/NPI.cpp
+)
 
 if(MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE /W4)
