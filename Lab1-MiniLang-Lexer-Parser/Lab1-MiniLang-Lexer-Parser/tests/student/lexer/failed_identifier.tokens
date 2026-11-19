@@ -1,0 +1,4 @@
+1:1 Number '1'
+1:2 Ident 'identificador_'
+1:17 Ident '__hola'
+2:1 EndOfFile

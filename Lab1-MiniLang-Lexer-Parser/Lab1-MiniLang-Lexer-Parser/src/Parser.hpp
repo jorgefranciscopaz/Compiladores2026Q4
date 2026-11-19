@@ -77,7 +77,7 @@ public:
     void setTrace(bool on) { traceOn = on; }
 
 private:
-    // ---- one method per non-terminal (to be written by you: TODO(B3)) ----
+    // ---- one method per non-terminal  ----
     void program();
     void item();
 

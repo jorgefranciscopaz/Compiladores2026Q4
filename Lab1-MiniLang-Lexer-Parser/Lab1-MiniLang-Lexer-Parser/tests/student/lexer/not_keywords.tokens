@@ -1,0 +1,5 @@
+1:1 Ident 'iifif'
+1:8 Ident 'truue'
+1:14 OpNot '!'
+1:15 KeywordTrue 'true'
+2:1 EndOfFile

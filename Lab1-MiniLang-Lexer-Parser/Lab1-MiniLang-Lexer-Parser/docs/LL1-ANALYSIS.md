@@ -103,4 +103,6 @@ expect(EOF)
 
 ```
 
-Then (optional but recommended) add `TraceScope trace(*this, "name");` to your methods, run `minilang --trace` on a file with that statement and compare. If they differ, who is right, you or the program? Write what you found: <TODO>
+Then (optional but recommended) add `TraceScope trace(*this, "name");` to your methods, run `minilang --trace` on a file with that statement and compare. If they differ, who is right, you or the program? Write what you found: 
+
+The structure matched exactly: the nesting, the two term calls under additive (because * binds tighter than +) and the two unary calls in the second term. The difference was in the expect lines: my hand-made trace had expect(=) and an expect for each NUMBER/IDENT in primary, but my parser checks those tokens in an if and consumes them with nextToken(), so they are not printed. The program is right about what my code does; both versions accept the same input. I updated my trace to match.
