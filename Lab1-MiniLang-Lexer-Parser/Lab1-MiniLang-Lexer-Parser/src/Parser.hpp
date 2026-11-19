@@ -159,6 +159,19 @@ private:
         }
     }
 
+    bool startsPrimary() const{
+        switch(token.tokenId){
+            case TokenId::Number:
+            case TokenId::KeywordTrue:
+            case TokenId::KeywordFalse:
+            case TokenId::Ident:
+            case TokenId::LParen:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     // ---- optional call trace (step B5) ----
     // Put `TraceScope trace(*this, "expr");` as the FIRST line of a non-terminal method and run
     // `minilang --trace file.txt`: every method entry is printed, indented by its nesting depth,
