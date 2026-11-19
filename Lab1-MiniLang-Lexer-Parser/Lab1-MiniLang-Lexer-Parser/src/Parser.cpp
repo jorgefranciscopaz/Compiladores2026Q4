@@ -137,9 +137,9 @@ void Parser::type()
 {
     TraceScope trace(*this, "type");
     if(token.tokenId == TokenId::KeywordInt){
-        nextToken();
+        expect(TokenId::KeywordInt, "Expected 'int' but found " + describe(token));
     }else if(token.tokenId == TokenId::KeywordBool){
-        nextToken();
+        expect(TokenId::KeywordBool, "Expected 'bool' but found " + describe(token));
     }else{
         throw error("Expected an int or bool but found " + describe(token));
     }
@@ -152,7 +152,7 @@ void Parser::returnType()
     if(token.tokenId == TokenId::KeywordInt || token.tokenId == TokenId::KeywordBool){
         type();
     }else if(token.tokenId == TokenId::KeywordVoid){
-        nextToken();
+        expect(TokenId::KeywordVoid, "Expected 'void' but found " + describe(token));
     }else{
         throw error("Expected int, bool or 'void' but found " + describe(token));
     }
@@ -204,7 +204,7 @@ void Parser::varDecl()
     type();
     expect(TokenId::Ident, "Expected 'Identifier' but found " + describe(token));
     if(token.tokenId == TokenId::Assign){
-        nextToken();
+        expect(TokenId::Assign, "Expected '=' but found " + describe(token));
         expr();
     }
     expect(TokenId::Semicolon, "Expected ';' but found " + describe(token));
@@ -216,10 +216,10 @@ void Parser::simpleStmt()
     TraceScope trace(*this, "simpleStmt");
     expect(TokenId::Ident, "Expected 'Identifier' but found " + describe(token));
     if(token.tokenId == TokenId::Assign){
-        nextToken();
+        expect(TokenId::Assign, "Expected '=' but found " + describe(token));
         expr();
     }else if(token.tokenId == TokenId::LParen){
-        nextToken();
+        expect(TokenId::LParen, "Expected '(' but found " + describe(token));
         if(startsExpr()){
             args();
         }
@@ -240,7 +240,7 @@ void Parser::ifStmt()
     expect(TokenId::RParen, "Expected ')' but found " + describe(token));
     block();
     if(token.tokenId == TokenId::KeywordElse){
-        nextToken();
+        expect(TokenId::KeywordElse, "Expected 'else' but found " + describe(token));
         if(token.tokenId == TokenId::KeywordIf){
             ifStmt();
         }else if(token.tokenId == TokenId::LBrace){
@@ -293,7 +293,7 @@ void Parser::forInit()
         expect(TokenId::Assign, "Expected '=' but found " + describe(token));
         expr();
     }else if(token.tokenId == TokenId::Ident){
-        nextToken();
+        expect(TokenId::Ident, "Expected an identifier but found " + describe(token));
         expect(TokenId::Assign, "Expected '=' but found " + describe(token));
         expr();
     }else{
@@ -352,7 +352,7 @@ void Parser::orExpr()
     TraceScope trace(*this, "orExpr");
     andExpr();
     while(token.tokenId == TokenId::OpOr){
-        nextToken();
+        expect(TokenId::OpOr, "Expected '||' but found " + describe(token));
         andExpr();
     }
 }
@@ -363,7 +363,7 @@ void Parser::andExpr()
     TraceScope trace(*this, "andExpr");
     equality();
     while(token.tokenId == TokenId::OpAnd){
-        nextToken();
+        expect(TokenId::OpAnd, "Expected '&&' but found " + describe(token));
         equality();
     }
 }
@@ -374,7 +374,7 @@ void Parser::equality()
     TraceScope trace(*this, "equality");
     relational();
     while(token.tokenId == TokenId::OpEqual || token.tokenId == TokenId::OpNotEqual){
-        nextToken();
+        expect(token.tokenId, "Expected '==' or '!=' but found " + describe(token));
         relational();
     }
 }
@@ -386,7 +386,7 @@ void Parser::relational()
     additive();
     while(token.tokenId == TokenId::OpLess || token.tokenId == TokenId::OpLessEqual
         || token.tokenId == TokenId::OpGreater || token.tokenId == TokenId::OpGreaterEqual){
-            nextToken();
+            expect(token.tokenId, "Expected '<', '<=', '>', or '>=' but found " + describe(token));
             additive();
     }
 }
@@ -397,7 +397,7 @@ void Parser::additive()
     TraceScope trace(*this, "additive");
     term();
     while(token.tokenId == TokenId::OpAdd || token.tokenId == TokenId::OpSub){
-        nextToken();
+        expect(token.tokenId, "Expected '+' or '-' but found " + describe(token));
         term();
     }
 }
@@ -408,7 +408,7 @@ void Parser::term()
     TraceScope trace(*this, "term");
     unary();
     while(token.tokenId == TokenId::OpMul || token.tokenId == TokenId::OpDiv){
-        nextToken();
+        expect(token.tokenId, "Expected '*' or '/' but found " + describe(token));
         unary();
     }
 }
@@ -418,7 +418,7 @@ void Parser::unary()
 {
     TraceScope trace(*this, "unary");
     if(token.tokenId == TokenId::OpSub || token.tokenId == TokenId::OpNot){
-        nextToken();
+        expect(token.tokenId, "Expected '-' or '!' but found " + describe(token));
         unary();
     }else if(startsPrimary()){
         primary();
@@ -447,22 +447,22 @@ void Parser::primary()
         if(digits.size() > 10 || (digits.size() == 10 && digits > "2147483647")){
             throw error("Integral literar " + token.text + " is larger than allowed (2147483647)");
         }
-        nextToken();
+        expect(TokenId::Number, "Expected a number but found " + describe(token));
     }else if(token.tokenId == TokenId::KeywordTrue){
-        nextToken();
+        expect(TokenId::KeywordTrue, "Expected 'true' but found " + describe(token));
     }else if(token.tokenId == TokenId::KeywordFalse){
-        nextToken();
+        expect(TokenId::KeywordFalse, "Expected 'false' but found " + describe(token));
     }else if(token.tokenId == TokenId::Ident){
-        nextToken();
+        expect(TokenId::Ident, "Expected an identifier but found " + describe(token));
         if(token.tokenId == TokenId::LParen){
-            nextToken();
+            expect(TokenId::LParen, "Expected '(' but found " + describe(token));
             if(startsExpr()){
                 args();
             }
             expect(TokenId::RParen, "Expected ')' but found " + describe(token));
         }
     }else if(token.tokenId == TokenId::LParen){
-        nextToken();
+        expect(TokenId::LParen, "Expected '(' but found " + describe(token));
         expr();
         expect(TokenId::RParen, "Expected ')' but found " + describe(token));
     }else{
@@ -476,7 +476,7 @@ void Parser::args()
     TraceScope trace(*this, "args");
     expr();
     while(token.tokenId == TokenId::Comma){
-        nextToken();
+        expect(TokenId::Comma, "Expected ',' but found " + describe(token));
         expr();
     }
 }

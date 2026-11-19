@@ -58,11 +58,12 @@ Pick **five different decision points** of your parser (an alternative, an optio
 
 | Rule   | Decision the parser makes | Set A  | Set B  | A ∩ B = ∅ |
 | ------ | ------------------------- | ------ | ------ | --------- |
-| <TODO> | <TODO>                    | <TODO> | <TODO> | <TODO>    |
-| <TODO> | <TODO>                    | <TODO> | <TODO> | <TODO>    |
-| <TODO> | <TODO>                    | <TODO> | <TODO> | <TODO>    |
-| <TODO> | <TODO>                    | <TODO> | <TODO> | <TODO>    |
-| <TODO> | <TODO>                    | <TODO> | <TODO> | <TODO>    |
+| `orExpr → andExpr ( "\|\|" andExpr )*` | loop: seguir en el `while` o seguir | FIRST (`"\|\|" andExpr`) = {`"\|\|"`} | FOLLOW(orExpr) = FOLLOW(expr) = {`)`, `,`, `;`} | Si, `\|\|` no esta en FOLLOW |
+| `call → IDENT "(" [args] ")"` | opcional: parsear args o no | FIRST(args) = {`'-'`, `'!'`, NUMBER, `'true'`, `'false'`, IDENT, `'('`} | { `')'` } (en caso de que no se parsee args, solo se espera el cierre de parentesis) | Si, `')'` no esta en FIRST(args) |
+| `returnStmt  → "return" [ expr ] ";"` | opcional: parsear expr o no | FIRST(expr) = {NUMBER, `true`, `false`, IDENT, `-`, `!`, `(`} | {`;`} (si no se parsea expr, solamente se espera el cierre del stmt con `;`) | Si, `';'` no se encuentra dentro de FIRST(expr) |
+| `primary → NUMBER \| "true" \| "false" \| IDENT [ "(" [ args ] ")" ] \| "(" expr ")"` | alternativa: elegir cuál de las 5 producciones usar | FIRST de cada alternativa: {NUMBER}, {`'true'`}, {`'false'`}, {IDENT}, {`'('`} | (son disjuntos de dos en dos) | Sí, cada alternativa empieza con un token distinto |
+| `andExpr → equality ( "&&" equality )*` | loop: seguir parseando `"&&" equality` mientras el siguiente token sea `"&&"` | FIRST(`"&&" equality`) = {`"&&"`} | FOLLOW(andExpr) = {`"\|\|"`} U FOLLOW(orExpr) = {`"\|\|"`, `")"`, `","`, `";"`} | Si, `"&&"` no esta en FOLLOW |
+
 
 ## 4. Call trace
 
@@ -75,34 +76,35 @@ x = 1 + 2 * y;
 Your trace:
 
 ```
-program
-  item
-    statement
-      simpleStmt
-        expect(IDENT)
-        expect(=)
-        expr
-          orExpr
-            andExpr
-              equality
-                relational
-                  additive
-                    term
-                      unary
-                        primary
-                          expect(NUMBER)
-                    term
-                      unary
-                        primary
-                          expect(NUMBER)
-                      unary
-                        primary
-                          expect(IDENT)
-        expect(;)
-expect(EOF)
-
+program()
+  item()
+    statement()
+      simpleStmt()
+        expect(Ident)
+        expect(Assign)
+        expr()
+          orExpr()
+            andExpr()
+              equality()
+                relational()
+                  additive()
+                    term()
+                      unary()
+                        primary()
+                          expect(Number)
+                    expect(OpAdd)
+                    term()
+                      unary()
+                        primary()
+                          expect(Number)
+                      expect(OpMul)
+                      unary()
+                        primary()
+                          expect(Ident)
+        expect(Semicolon)
+expect(EndOfFile)
 ```
 
 Then (optional but recommended) add `TraceScope trace(*this, "name");` to your methods, run `minilang --trace` on a file with that statement and compare. If they differ, who is right, you or the program? Write what you found: 
 
-The structure matched exactly: the nesting, the two term calls under additive (because * binds tighter than +) and the two unary calls in the second term. The difference was in the expect lines: my hand-made trace had expect(=) and an expect for each NUMBER/IDENT in primary, but my parser checks those tokens in an if and consumes them with nextToken(), so they are not printed. The program is right about what my code does; both versions accept the same input. I updated my trace to match.
+The structure matched exactly: the nesting, the two term calls under additive (because * binds tighter than +) and the two unary calls in the second term. The difference was in the expect lines: my hand-made trace had expect(=) and an expect for each NUMBER/IDENT in primary, but my parser checks those tokens in an if and consumes them with nextToken(), so they are not printed. The program is right about what my code does; both versions accept the same input.

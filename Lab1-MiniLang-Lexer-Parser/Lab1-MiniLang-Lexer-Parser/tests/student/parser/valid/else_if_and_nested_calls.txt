@@ -1,0 +1,17 @@
+func int max(int a, int b) {
+    if (a > b) {
+        return a;
+    } else if (a == b) {
+        print a;
+    } else {
+        return b;
+    }
+    return 0;
+}
+
+func void main() {
+    int x = max(3, 4 * (2 + 1));
+    while (x > 0) {
+        x = x - 1;
+    }
+}
