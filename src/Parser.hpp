@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include "Lexer.hpp"
-#include "NPI.hpp"
+#include "Node.hpp"
 
 // Syntax error with the position of the offending token.
 class ParseError : public std::runtime_error {
@@ -16,16 +16,7 @@ public:
     int column;
 };
 
-// Recursive descent parser for the grammar (EBNF):
-//
-//   program → assign+
-//   assign → IDENT "=" expr ";"
-//   expr   → term ("+" term)*
-//   term   → factor ("*" factor)*
-//   factor → IDENT | NUMBER | "(" expr ")"
-//
-// Each non-terminal is implemented by one method. `token` holds the
-// current lookahead token (LL(1)).
+
 class Parser {
 public:
     Parser(Lexer& lexer);

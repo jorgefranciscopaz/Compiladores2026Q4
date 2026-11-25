@@ -13,8 +13,10 @@ src/Parser.hpp
 src/Parser.cpp
 src/LL1.hpp
 src/LL1.cpp
-src/NPI.hpp
-src/NPI.cpp
+src/Node.hpp
+src/Node.cpp
+src/Visitor.hpp
+src/Visitor.cpp
 )
 
 if(MSVC)

@@ -1,4 +1,5 @@
 #include "Parser.hpp"
+#include "Visitor.hpp"
 #include <iostream>
 
 Parser::Parser(Lexer &lex) : lexer(lex), token(TokenId::Unknown, "")
